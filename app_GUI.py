@@ -31,7 +31,7 @@ with col1:
 with col2:
     st.subheader("Time domain:", anchor="center")
     time_unit = st.selectbox("Time Unit:", ["fs", "ps", "ns", "μs", "ms", "s"], index=2, help="Define the units of the simulation.")
-    t_min = st.number_input(f"Starting time [{time_unit}]:", value=0.0100, help="Starting time for your simulation. Minimum value 0.0001.", min_value=0.0000, format="%.4f")
+    t_min = st.number_input(f"Starting time [{time_unit}]:", value=0.01, help="Starting time for your simulation. Minimum value 0.0001.", min_value=0.00, format="%.2f")
     t_max = st.number_input(f"Ending time [{time_unit}]:", value=1000, help="Ending time for your simulation. Maximum value 1,000,000.", max_value=1000000)
     num_points = st.number_input("Number of Time Points:", min_value=100, value=1000, max_value=50000, step=10, help="Defines the number of points beetween min and max t. Max allowed 50000 for stability.")
 
