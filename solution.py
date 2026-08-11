@@ -15,7 +15,7 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
             c_ops.append(np.sqrt(rate) * lindblad_jump_operator)
     
     expectations = [qt.fock_dm(number_of_states, i) for i in range(number_of_states)]
-    labels = [f"State ket({i})" for i in range(number_of_states)]
+    labels = [f"State |{i}⟩" for i in range(number_of_states)]
 
     solve_all = mesolve(H, ket, t_list, c_ops, expectations)
 
@@ -28,13 +28,16 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
     fig, ax = plt.subplots(figsize=(10, 5))
 
     states_to_plot = range(number_of_states - 1) if (hide_ground_state and number_of_states > 1) else range(number_of_states)
+    colors = plt.cm.tab10(np.linspace(0, 1, 10))
+    styles = ['-', '--', '-.', ':']
 
     for i in states_to_plot:
         label = labels[i]
-        ax.loglog(DF[time_col_name], DF[label], label=label)
+        style = styles[i % len(styles)]
+        ax.loglog(DF[time_col_name], DF[label], label=label, color=colors[i], linestyle=style)
 
     ax.set_xlabel(f"Time [{time_unit}]", fontsize=12)
-    ax.set_ylabel("Population", fontsize=12)
+    ax.set_ylabel("Population [no units]", fontsize=12)
     ax.legend(loc="best")
     plt.tight_layout()
 

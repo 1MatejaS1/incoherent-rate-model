@@ -5,7 +5,7 @@ from solution import population_simulation
 
 st.title("Inchoherent Rate Model")
 
-st.markdown("Density matrix formalism solver with custom lifetimes and transitions")
+st.markdown("Density matrix formalism solver with custom lifetimes and transitions. Define the number of states in your system including a ground state, define the time domain for the simulation and assign rate constants.")
 
 st.divider()
 
@@ -38,7 +38,7 @@ with col2:
 
 st.divider()
 
-st.subheader("Rate constants and state transitions (|b (target⟩ → |a (source⟩)")
+st.subheader("Rate constants and state transitions (|b⟩ → |a⟩)")
 st.caption("Click '+' at the bottom of the table to add more transitions.")
 
 example_transitions = pd.DataFrame([
@@ -50,7 +50,7 @@ editable_df = st.data_editor(
     num_rows="dynamic",
     use_container_width=True,
     column_config={
-        "tau": st.column_config.NumberColumn(r"Lifetime τ [{time_unit}]", min_value=0.0001, help="Tau parameter (Rate = 1/τ)"),
+        "tau": st.column_config.NumberColumn(f"Lifetime τ [{time_unit}]", min_value=0.0001, help="Tau parameter (Rate = 1/τ)"),
         "a": st.column_config.NumberColumn("Target state (a)", min_value=0, max_value=n-1, step=1),
         "b": st.column_config.NumberColumn("Source state (b)", min_value=0, max_value=n-1, step=1),
     }
