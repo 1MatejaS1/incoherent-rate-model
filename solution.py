@@ -30,7 +30,7 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
     states_to_plot = range(number_of_states - 1) if (hide_ground_state and number_of_states > 1) else range(number_of_states)
     colors = plt.cm.tab10(np.linspace(0, 1, 10))
     styles = ['-', '--', '-.', ':']
-
+    
     for i in states_to_plot:
         label = labels[i]
         style = styles[i % len(styles)]

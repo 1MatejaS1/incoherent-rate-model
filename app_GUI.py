@@ -12,7 +12,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("System Definition:")
-    n = st.number_input("Hilbert space dimension (n):", min_value=2, value=10, max_value=10, step=1, help="How many states do you have in your system? Include the ground state here.")
+    n = st.number_input("Hilbert space dimension (n):", min_value=2, value=3, max_value=10, step=1, help="How many states do you have in your system? Include the ground state here.")
     m = st.number_input("Initialy occupied state (m):", 
         min_value=0, 
         max_value=int(n - 1), 
@@ -38,10 +38,11 @@ with col2:
 st.divider()
 
 st.subheader("Rate constants and state transitions '(|b⟩ → |a⟩)'")
-st.caption("Click '+' at the bottom of the table to add more transitions. You can export the table as CSV by hovering over the top right corner and pressing the 'Download as CSV' option. Remove any transitions by selecting the left column next to the desired transition and in the top right press 'Delete row(s)'. Below is an example of a non-radiative decay from the top state to the ground state.")
+st.caption("Click '+' at the bottom of the table to add more transitions. You can export the table as CSV by hovering over the top right corner and pressing the 'Download as CSV' option. Remove any transitions by selecting the left column next to the desired transition and in the top right press 'Delete row(s)'. Below are some examples of a non-radiative and ISC (inter-system crossing) transitions.")
 
 example_transitions = pd.DataFrame([
-    {"name": "Non-radiative decay of |0⟩", "tau": 5, "a": 9, "b": 0},
+    {"name": "Non-radiative decay: Singlet '|0⟩ → |2⟩'", "tau": 15, "a": 2, "b": 0},
+    {"name": "ISC: Singlet → Triplet '|0⟩ → |1⟩'", "tau": 30, "a": 1, "b": 0}
 ])
 
 editable_df = st.data_editor(
@@ -74,7 +75,7 @@ if run_pressed:
         st.subheader("Results:")
         st.pyplot(fig)
 
-        user_file_name = st.text_input("Enter file name:", f"population_simulation_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
+        user_file_name = st.text_input("Enter file name:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
         csv_data = df_result.to_csv(index=False).encode('utf-8')
         st.download_button(
             label=f"Download results as CSV (in {time_unit})",
