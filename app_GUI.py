@@ -3,18 +3,18 @@ import numpy as np
 import pandas as pd
 from solution import population_simulation
 
-st.title("Inchoherent Rate Model")
+st.title("Inchoherent Rate Model", anchor="center")
 
-st.markdown("Density matrix formalism solver with custom lifetimes and transitions")
+st.markdown("Density matrix formalism solver with custom lifetimes and transitions", anchor="center")
 
 st.divider()
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("System Definition")
-    n = st.number_input("Hilbert space dimension (n)", min_value=2, value=3, max_value=10, step=1)
-    m = st.number_input("Initialy occupied state (m)", 
+    st.subheader("System Definition", anchor="center")
+    n = st.number_input("Hilbert space dimension (n):", min_value=2, value=3, max_value=10, step=1)
+    m = st.number_input("Initialy occupied state (m):", 
         min_value=0, 
         max_value=int(n - 1), 
         value=0, 
@@ -30,15 +30,15 @@ with col1:
         st.dataframe(chunk_df, hide_index=True, use_container_width=True)
 
 with col2:
-    st.subheader("Time domain")
-    time_unit = st.selectbox("Time Unit", ["fs", "ps", "ns", "μs", "ms", "s"], index=2)
-    t_min = st.number_input(f"Starting time [{time_unit}]", value=0.1)
-    t_max = st.number_input(f"Ending time [{time_unit}]", value=10.0)
-    num_points = st.number_input("Number of Time Points", min_value=100, value=1000, max_value=50000, step=10)
+    st.subheader("Time domain", anchor="center")
+    time_unit = st.selectbox("Time Unit:", ["fs", "ps", "ns", "μs", "ms", "s"], index=2)
+    t_min = st.number_input(f"Starting time [{time_unit}]:", value=0.1)
+    t_max = st.number_input(f"Ending time [{time_unit}]:", value=10.0)
+    num_points = st.number_input("Number of Time Points:", min_value=100, value=1000, max_value=50000, step=10)
 
 st.divider()
 
-st.subheader("Rate constants and state transitions (|b⟩ → |a⟩)")
+st.subheader("Rate constants and state transitions (|b (target⟩ → |a (source⟩)")
 st.caption("Click '+' at the bottom of the table to add more transitions.")
 
 example_transitions = pd.DataFrame([
@@ -50,7 +50,7 @@ editable_df = st.data_editor(
     num_rows="dynamic",
     use_container_width=True,
     column_config={
-        "tau": st.column_config.NumberColumn("Lifetime τ [{time_unit}]", min_value=0.0001, help="Tau parameter (Rate = 1/τ)"),
+        "tau": st.column_config.NumberColumn(r"Lifetime τ [{time_unit}]", min_value=0.0001, help="Tau parameter (Rate = 1/τ)"),
         "a": st.column_config.NumberColumn("Target state (a)", min_value=0, max_value=n-1, step=1),
         "b": st.column_config.NumberColumn("Source state (b)", min_value=0, max_value=n-1, step=1),
     }
