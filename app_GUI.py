@@ -3,16 +3,16 @@ import numpy as np
 import pandas as pd
 from solution import population_simulation
 
-st.title("Inchoherent Rate Model", anchor="center")
+st.title("Inchoherent Rate Model")
 
-st.markdown("Density matrix formalism solver with custom lifetimes and transitions", anchor="center")
+st.markdown("Density matrix formalism solver with custom lifetimes and transitions")
 
 st.divider()
 
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("System Definition", anchor="center")
+    st.subheader("System Definition")
     n = st.number_input("Hilbert space dimension (n):", min_value=2, value=3, max_value=10, step=1)
     m = st.number_input("Initialy occupied state (m):", 
         min_value=0, 
