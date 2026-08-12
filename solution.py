@@ -1,4 +1,4 @@
-import qutip as qt; from qutip import basis, mesolve; import numpy as np; import matplotlib.pyplot as plt; import pandas as pd
+import qutip as qt; from qutip import basis, mesolve, SolverOptions; import numpy as np; import matplotlib.pyplot as plt; import pandas as pd
 
 def population_simulation(number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns", hide_ground_state: bool = True):
     ket = basis(number_of_states,starting_state)
@@ -17,7 +17,9 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
     expectations = [qt.fock_dm(number_of_states, i) for i in range(number_of_states)]
     labels = [f"State |{i}⟩" for i in range(number_of_states)]
 
-    solve_all = mesolve(H, ket, t_list, c_ops, expectations)
+
+    setting = {"method": "lsoda"}
+    solve_all = mesolve(H, ket, t_list, c_ops, expectations, options=setting)
 
     time_col_name = f"time [{time_unit}]"
     data_dictionary = {time_col_name: t_list}
