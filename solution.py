@@ -1,4 +1,4 @@
-import qutip as qt; from qutip import basis, mesolve, SolverOptions; import numpy as np; import matplotlib.pyplot as plt; import pandas as pd
+import qutip as qt; from qutip import basis, mesolve, SolverOptions; import numpy as np; import matplotlib.pyplot as plt; import pandas as pd; from scipy.interpolate import interp1d
 
 def population_simulation(number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns", hide_ground_state: bool = True):
     ket = basis(number_of_states,starting_state)
@@ -47,18 +47,20 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
 
 def plot_experimental_data(data_exp):
     time_exp = data_exp.iloc[:, 0].values
-    y_columns = data_exp.columns[1:] 
+    y_columns = data_exp.columns[1:]
+    colors = plt.colormaps['tab10'].colors
+    markerstyles = ['o', '^', 'x', 'v', 's', '*', 'P,', 'D', '>'] 
 
     fig, ax = plt.subplots()
 
-    for col in y_columns:
-        ax.loglog(time_exp, data_exp[col], label=col, marker = "x", linestyle = "None")
+    for i,col in enumerate(y_columns):
+        ax.loglog(time_exp, data_exp[col], label=col, marker = markerstyles[i], linestyle = "None", color=colors[i])
 
     return fig
 
 def data_analysis(data_exp, number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns", hide_ground_state: bool = True):
 
-    _,data_model = population_simulation(number_of_states, starting_state, state_transitions, t_list, time_unit, hide_ground_state)
+    fig_model,data_model = population_simulation(number_of_states, starting_state, state_transitions, t_list, time_unit, hide_ground_state)
 
     time_model = data_model.iloc[:, 0].values
 
@@ -68,7 +70,7 @@ def data_analysis(data_exp, number_of_states: int, starting_state: int, state_tr
         state = data_exp.columns[i]
         state_data = data_exp.iloc[:, i].values
         state_model_data = data_model.iloc[:, i].values    
-        model_interpolation = np.interp1d(time_model, state_model_data, kind='linear', fill_value="extrapolate")
+        model_interpolation = interp1d(time_model, state_model_data, kind='linear', fill_value="extrapolate")
 
         data_model_interpolate = model_interpolation (time_model)
     
@@ -76,14 +78,17 @@ def data_analysis(data_exp, number_of_states: int, starting_state: int, state_tr
 
     dimension = residuals.shape[1]
 
-    fig, ax = plt.subplots(dimension, 1, squeeze=False, figsize=(10, 2 * dimension))
+    fig_res, ax2 = plt.subplots(dimension, 1, squeeze=False, figsize=(10, 2 * dimension))
+
+    colors = plt.colormaps['tab10'].colors
 
     for i in range(dimension):
-        ax[i, 0].plot(residuals.iloc[:, i], marker = "x", linestyle = "None")
-        ax[i, 0].set_ylabel(residuals.columns[i])
+        ax2[i, 0].axhline(y=0, color='k')
+        ax2[i, 0].plot(residuals.iloc[:, i], marker = "x", linestyle = "None", color=colors[i])
+        ax2[i, 0].set_ylabel(residuals.columns[i])
 
     plt.tight_layout()
 
-    return fig
+    return fig_model, fig_res, data_model
 
 

@@ -59,7 +59,7 @@ editable_df = st.data_editor(
 
 st.divider()
 
-experimental_import = st.toggle("I have experimental data to compare!", value=False, help="Do you have experimental data to compare to the model?")
+experimental_import = st.toggle("[NEW] I have experimental data to compare!", value=True, help="Do you have experimental data to compare to the model? Toggle OFF if you just want to run a model.")
 
 if experimental_import:
     st.write("[TEST] Please upload you experimental data as a CSV file. Make sure that the first column includes the time and do NOT include any ground states here. Order the data as per you simulation selection above. ")
@@ -75,29 +75,30 @@ if experimental_import:
         else:
             st.write("Uploaded data overview:")
             st.dataframe(imported_df, use_container_width=True)
-
+            st.write("Your data plot (log/log):")
             fig_exp = plot_experimental_data(imported_df)
-            
             st.pyplot(fig_exp)
 
             col_run2, col_opt2 = st.columns([2, 1])
             st.divider()
             with col_opt2:
-                show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False)
+                show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False, help = "Usually left OFF here")
 
             with col_run2:
-                run_pressed = st.button("Calculate (Run) [IN PROGRESS - Model output only]", type="primary", use_container_width=True)
+                run_pressed = st.button("Calculate and Compare with experiment (Run)", type="primary", use_container_width=True)
 
             if run_pressed:
                 transitions = editable_df.to_dict(orient="records")
                 with st.spinner("Solving..."):
                     t_list = np.logspace(np.log10(t_min), np.log10(t_max), int(num_points))
-                    fig, df_result = data_analysis(n, m, transitions, t_list)
-                    st.subheader("Results:")
-                    st.pyplot(fig)
+                    fig_model,fig_comparison,data_model = data_analysis(imported_df, n, m, transitions, t_list)
+                    st.subheader("Model Results:")
+                    st.pyplot(fig_model)
+                    st.subheader("Per-state residuals:")
+                    st.pyplot(fig_comparison)
 
                     user_file_name = st.text_input("Enter file name:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
-                    csv_data = df_result.to_csv(index=False).encode('utf-8')
+                    csv_data = data_model.to_csv(index=False).encode('utf-8')
                     st.download_button(
                         label=f"Download results as CSV (in {time_unit})",
                         data=csv_data,
