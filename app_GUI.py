@@ -91,18 +91,26 @@ if experimental_import:
                 transitions = editable_df.to_dict(orient="records")
                 with st.spinner("Solving..."):
                     t_list = np.logspace(np.log10(t_min), np.log10(t_max), int(num_points))
-                    fig_model,fig_comparison,data_model = data_analysis(imported_df, n, m, transitions, t_list)
+                    fig_model,fig_comparison,data_model,residuals = data_analysis(imported_df, n, m, transitions, t_list)
                     st.subheader("Model Results:")
                     st.pyplot(fig_model)
                     st.subheader("Per-state residuals:")
                     st.pyplot(fig_comparison)
 
-                    user_file_name = st.text_input("Enter file name:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
+                    user_file_name = st.text_input("Enter file name for the model data:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
                     csv_data = data_model.to_csv(index=False).encode('utf-8')
                     st.download_button(
                         label=f"Download results as CSV (in {time_unit})",
                         data=csv_data,
                         file_name=user_file_name,
+                        mime="text/csv"
+                    )
+                    user_file_name2 = st.text_input("Enter file name for the residual data:", f"TADF_residuals.csv", help="You can choose how to name your residuals data here.")
+                    csv_data2 = residuals.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label=f"Download results as CSV (in {time_unit})",
+                        data=csv_data2,
+                        file_name=user_file_name2,
                         mime="text/csv"
                     )
 

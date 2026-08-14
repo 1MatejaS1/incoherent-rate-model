@@ -62,33 +62,38 @@ def data_analysis(data_exp, number_of_states: int, starting_state: int, state_tr
 
     fig_model,data_model = population_simulation(number_of_states, starting_state, state_transitions, t_list, time_unit, hide_ground_state)
 
+    time_exp = data_exp.iloc[:, 0].values
     time_model = data_model.iloc[:, 0].values
 
-    residuals = pd.DataFrame()
+    residuals = pd.DataFrame(index=time_exp)
+    residuals.index.name = data_exp.columns[0]
 
     for i in range(1, data_exp.shape[1]):
         state = data_exp.columns[i]
         state_data = data_exp.iloc[:, i].values
         state_model_data = data_model.iloc[:, i].values    
+    
         model_interpolation = interp1d(time_model, state_model_data, kind='linear', fill_value="extrapolate")
 
-        data_model_interpolate = model_interpolation (time_model)
+        data_model_interpolate = model_interpolation(time_exp)
     
-        residuals[state] = state_data - data_model_interpolate 
+        residuals[state] = np.log10(state_data) - np.log10(data_model_interpolate)
 
     dimension = residuals.shape[1]
 
-    fig_res, ax2 = plt.subplots(dimension, 1, squeeze=False, figsize=(10, 2 * dimension))
-
+    fig_res, ax2 = plt.subplots(dimension, 1, squeeze=False, figsize=(10, 2.5 * dimension))
     colors = plt.colormaps['tab10'].colors
 
     for i in range(dimension):
         ax2[i, 0].axhline(y=0, color='k')
-        ax2[i, 0].plot(residuals.iloc[:, i], marker = "x", linestyle = "None", color=colors[i])
+        ax2[i, 0].plot(residuals.iloc[:, i], marker = "x", linestyle = "None", color=colors[i]) 
         ax2[i, 0].set_ylabel(residuals.columns[i])
+        ax2[i, 0].set_xscale('log')
+        ax2[i, 0].set_ylabel("Residual")
+        ax2[i, 0].set_xlabel(f"Time [{time_unit}]")
 
     plt.tight_layout()
 
-    return fig_model, fig_res, data_model
+    return fig_model, fig_res, data_model, residuals
 
 
