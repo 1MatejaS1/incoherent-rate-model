@@ -26,7 +26,7 @@ with col1:
         headers = [f"|{i}⟩" for i in chunk]
         pops = [1 if i == m else 0 for i in chunk]
         chunk_df = pd.DataFrame([pops], columns=headers)
-        st.dataframe(chunk_df, hide_index=True, use_container_width=True)
+        st.dataframe(chunk_df, hide_index=True, width="stretch")
 
 with col2:
     st.subheader("Time domain:", anchor="center")
@@ -48,7 +48,7 @@ example_transitions = pd.DataFrame([
 editable_df = st.data_editor(
     example_transitions,
     num_rows="dynamic",
-    use_container_width=True,
+    width="stretch",
     column_config={
         "name": st.column_config.TextColumn("Name of the constant (optional)", max_chars=250, help="You can name your constants and transitions here. Convenient if you want to export the table."),
         "tau": st.column_config.NumberColumn(f"Lifetime τ [{time_unit}]", min_value=0.0001, help="Tau parameter (Rate = 1/τ)"),
@@ -74,7 +74,7 @@ if experimental_import:
 
         else:
             st.write("Uploaded data overview:")
-            st.dataframe(imported_df, use_container_width=True)
+            st.dataframe(imported_df, width="stretch")
             st.write("Your data plot (log/log):")
             fig_exp = plot_experimental_data(imported_df)
             st.pyplot(fig_exp)
@@ -85,7 +85,7 @@ if experimental_import:
                 show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False, help = "Usually left OFF here")
 
             with col_run2:
-                run_pressed = st.button("Calculate and Compare with experiment (Run)", type="primary", use_container_width=True)
+                run_pressed = st.button("Calculate and Compare with experiment (Run)", type="primary", width="stretch")
 
             if run_pressed:
                 transitions = editable_df.to_dict(orient="records")
@@ -114,7 +114,7 @@ else:
         show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False)
 
     with col_run:
-        run_pressed = st.button("Calculate (Run)", type="primary", use_container_width=True)
+        run_pressed = st.button("Calculate (Run)", type="primary", width="stretch")
 
     if run_pressed:
         transitions = editable_df.to_dict(orient="records")

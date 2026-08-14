@@ -27,7 +27,7 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
         data_dictionary[label] = pop
     DF = pd.DataFrame(data_dictionary)
 
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots()
 
     states_to_plot = range(number_of_states - 1) if (hide_ground_state and number_of_states > 1) else range(number_of_states)
     colors = plt.colormaps['tab10'].colors
