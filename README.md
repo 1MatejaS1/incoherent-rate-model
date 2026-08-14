@@ -10,7 +10,7 @@ Built with **Streamlit** and **QuTiP** to simulate open quantum system dynamics 
 - **Log-Log Population Plots:** Visualise population dynamics with options to filter/hide specific state trajectories.
 - **CSV Data Export:** Save simulation output with unit-tagged headers for external analysis. Save your table of constants and transitions.
 
-## Local Installation
+## Local Installation Using Git (Recommended):
 
 ### 1) Clone the repository
 ```bash
@@ -18,15 +18,64 @@ git clone [https://github.com/1MatejaS1/incoherent-rate-model.git](https://githu
 cd YOUR_REPO_NAME
 ```
 ### 2) Set up a virtual environment
+
+**Windows (Command Prompt / PowerShell):**
 ```bash
 python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+.venv\Scripts\activate
+```
+**Linux / macOS:**
+```bash
+python -m venv .venv
+source .venv/bin/activate
 ```
 ### 3) Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 ### 4) Run the streamlit application
+```bash
+streamlit run app_GUI.py
+```
+
+## Without Git (Download ZIP):
+
+### 1) Download the files:
+
+- At the top of this GitHub repository page, click the **green < > Code button**. Select **Download ZIP**.
+- Extract the downloaded .zip file to a location on your computer.
+- Open your terminal or command prompt in the extracted folder:
+
+**Windows:** Open the extracted folder in File Explorer, click the address bar, type cmd, and press Enter.
+
+**macOS:** Right-click the extracted folder, hover over Services, and select New Terminal at Folder.
+
+### 2) Run the code:
+
+Once you are inside the project directory in your terminal/command prompt:
+
+- Set up a virtual environment
+
+**Linux / macOS:**
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+**Windows:**
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+ - Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+- Run the Streamlit application
+
 ```bash
 streamlit run app_GUI.py
 ```
