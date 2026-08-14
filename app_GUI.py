@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from solution import population_simulation
+from solution import population_simulation, plot_experimental_data, data_analysis
 
 st.title("Inchoherent Rate Model Simulation")
 st.markdown("Density matrix formalism solver with custom lifetimes and transitions. You will be requested to define the number of states 'n' (Hilbert space dimension) including a ground state, a starting Fock state vector |m⟩ (this could be the bright state in your system), the time domain for the simulation and assign rate constants with corresponding state transitions.")
@@ -59,27 +59,75 @@ editable_df = st.data_editor(
 
 st.divider()
 
-col_run, col_opt = st.columns([2, 1])
+experimental_import = st.toggle("I have experimental data to compare!", value=False, help="Do you have experimental data to compare to the model?")
 
-with col_opt:
-    show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False)
+if experimental_import:
+    st.write("[TEST] Please upload you experimental data as a CSV file. Make sure that the first column includes the time and do NOT include any ground states here. Order the data as per you simulation selection above. ")
+    imported = st.file_uploader("Upload a file (CSV):", type="csv")
 
-with col_run:
-    run_pressed = st.button("Calculate (Run)", type="primary", use_container_width=True)
+    if imported is not None:
+        imported_df = pd.read_csv(imported)
+        column_check = len(imported_df.columns)
 
-if run_pressed:
-    transitions = editable_df.to_dict(orient="records")
-    with st.spinner("Solving..."):
-        t_list = np.logspace(np.log10(t_min), np.log10(t_max), int(num_points))
-        fig, df_result = population_simulation(n, m, transitions, t_list)
-        st.subheader("Results:")
-        st.pyplot(fig)
+        if column_check != (n):
+            st.error(f"Please upload a file that has the right number of columns, in this case {n}. Your file had {column_check}.")
 
-        user_file_name = st.text_input("Enter file name:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
-        csv_data = df_result.to_csv(index=False).encode('utf-8')
-        st.download_button(
-            label=f"Download results as CSV (in {time_unit})",
-            data=csv_data,
-            file_name=user_file_name,
-            mime="text/csv"
-        )
+        else:
+            st.write("Uploaded data overview:")
+            st.dataframe(imported_df, use_container_width=True)
+
+            fig_exp = plot_experimental_data(imported_df)
+            
+            st.pyplot(fig_exp)
+
+            col_run2, col_opt2 = st.columns([2, 1])
+            st.divider()
+            with col_opt2:
+                show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False)
+
+            with col_run2:
+                run_pressed = st.button("Calculate (Run) [IN PROGRESS - Model output only]", type="primary", use_container_width=True)
+
+            if run_pressed:
+                transitions = editable_df.to_dict(orient="records")
+                with st.spinner("Solving..."):
+                    t_list = np.logspace(np.log10(t_min), np.log10(t_max), int(num_points))
+                    fig, df_result = data_analysis(n, m, transitions, t_list)
+                    st.subheader("Results:")
+                    st.pyplot(fig)
+
+                    user_file_name = st.text_input("Enter file name:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
+                    csv_data = df_result.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label=f"Download results as CSV (in {time_unit})",
+                        data=csv_data,
+                        file_name=user_file_name,
+                        mime="text/csv"
+                    )
+
+
+else:
+    col_run, col_opt = st.columns([2, 1])
+
+    with col_opt:
+        show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False)
+
+    with col_run:
+        run_pressed = st.button("Calculate (Run)", type="primary", use_container_width=True)
+
+    if run_pressed:
+        transitions = editable_df.to_dict(orient="records")
+        with st.spinner("Solving..."):
+            t_list = np.logspace(np.log10(t_min), np.log10(t_max), int(num_points))
+            fig, df_result = population_simulation(n, m, transitions, t_list)
+            st.subheader("Results:")
+            st.pyplot(fig)
+
+            user_file_name = st.text_input("Enter file name:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
+            csv_data = df_result.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label=f"Download results as CSV (in {time_unit})",
+                data=csv_data,
+                file_name=user_file_name,
+                mime="text/csv"
+            )

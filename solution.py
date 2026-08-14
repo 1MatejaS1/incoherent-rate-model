@@ -44,3 +44,46 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
     plt.tight_layout()
 
     return fig, DF
+
+def plot_experimental_data(data_exp):
+    time_exp = data_exp.iloc[:, 0].values
+    y_columns = data_exp.columns[1:] 
+
+    fig, ax = plt.subplots()
+
+    for col in y_columns:
+        ax.loglog(time_exp, data_exp[col], label=col, marker = "x", linestyle = "None")
+
+    return fig
+
+def data_analysis(data_exp, number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns", hide_ground_state: bool = True):
+
+    _,data_model = population_simulation(number_of_states, starting_state, state_transitions, t_list, time_unit, hide_ground_state)
+
+    time_model = data_model.iloc[:, 0].values
+
+    residuals = pd.DataFrame()
+
+    for i in range(1, data_exp.shape[1]):
+        state = data_exp.columns[i]
+        state_data = data_exp.iloc[:, i].values
+        state_model_data = data_model.iloc[:, i].values    
+        model_interpolation = np.interp1d(time_model, state_model_data, kind='linear', fill_value="extrapolate")
+
+        data_model_interpolate = model_interpolation (time_model)
+    
+        residuals[state] = state_data - data_model_interpolate 
+
+    dimension = residuals.shape[1]
+
+    fig, ax = plt.subplots(dimension, 1, squeeze=False, figsize=(10, 2 * dimension))
+
+    for i in range(dimension):
+        ax[i, 0].plot(residuals.iloc[:, i], marker = "x", linestyle = "None")
+        ax[i, 0].set_ylabel(residuals.columns[i])
+
+    plt.tight_layout()
+
+    return fig
+
+
