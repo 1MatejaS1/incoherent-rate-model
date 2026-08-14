@@ -96,4 +96,13 @@ def data_analysis(data_exp, number_of_states: int, starting_state: int, state_tr
 
     return fig_model, fig_res, data_model, residuals
 
+def normalisation_to_one(data_exp):
 
+    x = data_exp.columns[0]
+    y = data_exp.columns[1:]
+
+    normalisation = data_exp.iloc[:, 1:].max()
+    normalised = data_exp.copy()
+    normalised[y] = data_exp[y] / normalisation
+
+    return normalised

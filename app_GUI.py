@@ -1,7 +1,7 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from solution import population_simulation, plot_experimental_data, data_analysis
+from solution import population_simulation, plot_experimental_data, data_analysis, normalisation_to_one
 
 st.title("Inchoherent Rate Model Simulation")
 st.markdown("Density matrix formalism solver with custom lifetimes and transitions. You will be requested to define the number of states 'n' (Hilbert space dimension) including a ground state, a starting Fock state vector |m⟩ (this could be the bright state in your system), the time domain for the simulation and assign rate constants with corresponding state transitions.")
@@ -62,7 +62,7 @@ st.divider()
 experimental_import = st.toggle("[NEW] I have experimental data to compare!", value=True, help="Do you have experimental data to compare to the model? Toggle OFF if you just want to run a model.")
 
 if experimental_import:
-    st.write("[TEST] Please upload you experimental data as a CSV file. Make sure that the first column includes the time and do NOT include any ground states here. Order the data as per you simulation selection above. ")
+    st.write("Please upload you experimental data as a CSV file. Make sure that the first column includes your time data (of the same unit as above) and do NOT include any ground states here. Order the data as per you simulation selection above. ")
     imported = st.file_uploader("Upload a file (CSV):", type="csv")
 
     if imported is not None:
@@ -76,9 +76,18 @@ if experimental_import:
             st.write("Uploaded data overview:")
             st.dataframe(imported_df, width="stretch")
             st.write("Your data plot (log/log):")
-            fig_exp = plot_experimental_data(imported_df)
-            st.pyplot(fig_exp)
 
+            normalisation_choice = st.toggle("[Important] I need to normalise my data!", value=False, help="Is your experimental data normalised to the maximum value? You can look at the figure below, the highest data point value should be 1.")
+
+            if normalisation_choice:
+                imported_df = normalisation_to_one(imported_df)
+                fig_exp_norm = plot_experimental_data(imported_df)
+                st.pyplot(fig_exp_norm)
+
+            else:
+                fig_exp = plot_experimental_data(imported_df)
+                st.pyplot(fig_exp)
+            
             col_run2, col_opt2 = st.columns([2, 1])
             st.divider()
             with col_opt2:
