@@ -2,13 +2,13 @@ Built with **Streamlit** and **QuTiP** to simulate open quantum system dynamics 
 
 ## Key Features
 
-- **Flexible Hilbert Space:** Easily define total levels and initial occupied state index.
-- **Physical Parameterisation:** Input decay processes via lifetimes ($\tau$) instead of raw rate constants.
+- **Flexible Hilbert Space:** Easily define the total number of levels and the initially occupied state.
+- **Physical Parameterisation:** Input decay processes via lifetimes ($\tau$) instead of raw rate constants. Save your table of constants and transitions.
 - **Dynamic Transition Builder:** Interactively add an arbitrary number of state-to-state collapse channels.
 - **Experimental Data Import:** Import your experimental data and compare it with the model. You will also be able to see per-state residual plots.
 - **Custom Time Units:** Select between `fs`, `ps`, `ns`, `μs`, `ms`, and `s`.
 - **Log-Log Population Plots:** Visualise population dynamics with options to filter/hide specific state trajectories.
-- **CSV Data Export:** Save simulation output with unit-tagged headers for external analysis. Save your table of constants and transitions.
+- **CSV Data Export:** Save simulation output with unit-tagged headers for external analysis.
 
 ## Local Installation Using Git (Recommended):
 
