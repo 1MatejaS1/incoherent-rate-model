@@ -1,4 +1,4 @@
-import qutip as qt; from qutip import basis, mesolve, SolverOptions; import numpy as np; import matplotlib.pyplot as plt; import pandas as pd; from scipy.interpolate import interp1d
+import qutip as qt; from qutip import basis, mesolve; import numpy as np; import matplotlib.pyplot as plt; import pandas as pd; from scipy.interpolate import interp1d
 
 def population_simulation(number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns", hide_ground_state: bool = True):
     ket = basis(number_of_states,starting_state)
@@ -86,11 +86,12 @@ def data_analysis(data_exp, number_of_states: int, starting_state: int, state_tr
 
     for i in range(dimension):
         ax2[i, 0].axhline(y=0, color='k')
-        ax2[i, 0].plot(residuals.iloc[:, i], marker = "x", linestyle = "None", color=colors[i]) 
+        ax2[i, 0].plot(residuals.iloc[:, i], marker = "X", linestyle = "None", color=colors[i], markersize = 9) 
         ax2[i, 0].set_ylabel(residuals.columns[i])
         ax2[i, 0].set_xscale('log')
-        ax2[i, 0].set_ylabel("Residual")
-        ax2[i, 0].set_xlabel(f"Time [{time_unit}]")
+        ax2[i, 0].set_ylabel("Residual", fontsize=14)
+        ax2[i, 0].set_xlabel(f"Time [{time_unit}]", fontsize=14)
+        ax2[i, 0].tick_params(axis='both', labelsize=10)
 
     plt.tight_layout()
 
@@ -98,7 +99,6 @@ def data_analysis(data_exp, number_of_states: int, starting_state: int, state_tr
 
 def normalisation_to_one(data_exp):
 
-    x = data_exp.columns[0]
     y = data_exp.columns[1:]
 
     normalisation = data_exp.iloc[:, 1:].max()
@@ -106,3 +106,6 @@ def normalisation_to_one(data_exp):
     normalised[y] = data_exp[y] / normalisation
 
     return normalised
+
+
+

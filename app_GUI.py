@@ -4,7 +4,9 @@ import pandas as pd
 from solution import population_simulation, plot_experimental_data, data_analysis, normalisation_to_one
 
 st.title("Inchoherent Rate Model Simulation")
-st.markdown("Density matrix formalism solver with custom lifetimes and transitions. You will be requested to define the number of states 'n' (Hilbert space dimension) including a ground state, a starting Fock state vector |m⟩ (this could be the bright state in your system), the time domain for the simulation and assign rate constants with corresponding state transitions.")
+st.markdown("**Density matrix formalism** solver with custom lifetimes and transitions. You will be requested to define the number of states 'n' (Hilbert space dimension up to 10) in your system, including a ground (sink) state. " \
+"\n\n You can then assign a starting **Fock state vector |m⟩** (this could be the bright state in your system), the time domain for the simulation and rate constants with corresponding state transitions. " \
+"\n\n The time-evolution is then simulated with **QuTiP's** Lindblad master equation solver using the 'LSODA' method.")
 
 st.divider()
 
@@ -18,7 +20,7 @@ with col1:
         max_value=int(n - 1), 
         value=0, 
         step=1,
-        help="Usually 0, assigns a population value of 1 to this state. This could be the bright state in your system."
+        help="Usually set to 0, assigns a population value of 1 to this state. This could be the bright state in your system."
     )
     CHUNK = 5
     for start_idx in range(0, int(n), CHUNK):
@@ -31,9 +33,9 @@ with col1:
 with col2:
     st.subheader("Time domain:", anchor="center")
     time_unit = st.selectbox("Time Unit:", ["fs", "ps", "ns", "μs", "ms", "s"], index=2, help="Define the units of the simulation.")
-    t_min = st.number_input(f"Starting time [{time_unit}]:", value=0.01, help="Starting time for your simulation. Minimum value 0.0001.", min_value=0.00, format="%.2f")
+    t_min = st.number_input(f"Starting time [{time_unit}]:", value=0.01, help="Starting time for your simulation. Minimum value 0.01.", min_value=0.00, format="%.2f")
     t_max = st.number_input(f"Ending time [{time_unit}]:", value=1000, help="Ending time for your simulation. Maximum value 1,000,000.", max_value=1000000)
-    num_points = st.number_input("Number of Time Points:", min_value=100, value=1000, max_value=50000, step=10, help="Defines the number of points beetween min and max t. Max allowed 50000 for stability.")
+    num_points = st.number_input("Number of Time Points:", min_value=100, value=1000, max_value=50000, step=10, help="Defines the number of points beetween min and max t. 1000 is standard. Max allowed 50000, please note this will slow down the simulation.")
 
 st.divider()
 
@@ -77,7 +79,7 @@ if experimental_import:
             st.dataframe(imported_df, width="stretch")
             st.write("Your data plot (log/log):")
 
-            normalisation_choice = st.toggle("[Important] I need to normalise my data!", value=False, help="Is your experimental data normalised to the maximum value? You can look at the figure below, the highest data point value should be 1.")
+            normalisation_choice = st.toggle("[IMPORTANT] I need to normalise my data!", value=False, help="Is your experimental data normalised to the maximum value? You can look at the figure below, the highest data point value should be 1.")
 
             if normalisation_choice:
                 imported_df = normalisation_to_one(imported_df)
@@ -102,22 +104,23 @@ if experimental_import:
                     t_list = np.logspace(np.log10(t_min), np.log10(t_max), int(num_points))
                     fig_model,fig_comparison,data_model,residuals = data_analysis(imported_df, n, m, transitions, t_list)
                     st.subheader("Model Results:")
+
                     st.pyplot(fig_model)
                     st.subheader("Per-state residuals:")
                     st.pyplot(fig_comparison)
 
-                    user_file_name = st.text_input("Enter file name for the model data:", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
+                    user_file_name = st.text_input("**Enter file name for the model data:**", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
                     csv_data = data_model.to_csv(index=False).encode('utf-8')
                     st.download_button(
-                        label=f"Download results as CSV (in {time_unit})",
+                        label=f"Download model results as CSV (in {time_unit})",
                         data=csv_data,
                         file_name=user_file_name,
                         mime="text/csv"
                     )
-                    user_file_name2 = st.text_input("Enter file name for the residual data:", f"TADF_residuals.csv", help="You can choose how to name your residuals data here.")
+                    user_file_name2 = st.text_input("**Enter file name for the residual data:**", f"TADF_residuals.csv", help="You can choose how to name your residuals data here.")
                     csv_data2 = residuals.to_csv(index=False).encode('utf-8')
                     st.download_button(
-                        label=f"Download results as CSV (in {time_unit})",
+                        label=f"Download resiudal results as CSV (in {time_unit})",
                         data=csv_data2,
                         file_name=user_file_name2,
                         mime="text/csv"
