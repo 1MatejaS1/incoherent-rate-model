@@ -45,7 +45,7 @@ st.caption("Click '+' at the bottom of the table to add more transitions. You ca
 example_transitions = pd.DataFrame([
     {"name": "Non-radiative decay: Singlet '|0⟩ → |2⟩'", "tau": 15, "a": 2, "b": 0},
     {"name": "ISC: Singlet → Triplet '|0⟩ → |1⟩'", "tau": 30, "a": 1, "b": 0}
-])
+]).astype({"tau": "float64"})
 
 editable_df = st.data_editor(
     example_transitions,
@@ -53,7 +53,7 @@ editable_df = st.data_editor(
     width="stretch",
     column_config={
         "name": st.column_config.TextColumn("Name of the constant (optional)", max_chars=250, help="You can name your constants and transitions here. Convenient if you want to export the table."),
-        "tau": st.column_config.NumberColumn(f"Lifetime τ [{time_unit}]", min_value=0.0001, help="Tau parameter (Rate = 1/τ)"),
+        "tau": st.column_config.NumberColumn(f"Lifetime τ [{time_unit}]", min_value=0.001, format = "%.3f", help="Tau parameter (Rate = 1/τ)"),
         "a": st.column_config.NumberColumn("Target state (a)", min_value=0, max_value=n-1, step=1, help="What state recieves population?"),
         "b": st.column_config.NumberColumn("Source state (b)", min_value=0, max_value=n-1, step=1, help="What state loses population?"),
     }
