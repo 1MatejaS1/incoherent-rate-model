@@ -1,7 +1,8 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from solution import population_simulation, plot_experimental_data, data_analysis, normalisation_to_one
+from solution import population_simulation, data_analysis
+from helper import plot_experimental_data, normalisation_to_one
 
 st.title("Inchoherent Rate Model Simulation")
 st.markdown("**Density matrix formalism** solver with custom lifetimes and transitions. You will be requested to define the number of states 'n' (Hilbert space dimension up to 10) in your system, including a ground (sink) state. " \
@@ -90,13 +91,9 @@ if experimental_import:
                 fig_exp = plot_experimental_data(imported_df)
                 st.pyplot(fig_exp)
             
-            col_run2, col_opt2 = st.columns([2, 1])
             st.divider()
-            with col_opt2:
-                show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False, help = "Usually left OFF here")
 
-            with col_run2:
-                run_pressed = st.button("Calculate and Compare with experiment (Run)", type="primary", width="stretch")
+            run_pressed = st.button("Calculate and Compare with experiment (Run)", type="primary", width="stretch")
 
             if run_pressed:
                 transitions = editable_df.to_dict(orient="records")
@@ -106,7 +103,7 @@ if experimental_import:
                     st.subheader("Model Results:")
 
                     st.pyplot(fig_model)
-                    st.subheader("Per-state residuals:")
+                    st.subheader("Per-state residuals:", help = "You dont see all of your points? This usually occurs if the model decays down to low numbers while your data does not.")
                     st.pyplot(fig_comparison)
 
                     user_file_name = st.text_input("**Enter file name for the model data:**", f"TADF_population_simulation_in_{time_unit}.csv", help="You can choose how to name your data here. The CSV will include your selected time unit in the column header.")
@@ -126,15 +123,9 @@ if experimental_import:
                         mime="text/csv"
                     )
 
-
 else:
-    col_run, col_opt = st.columns([2, 1])
 
-    with col_opt:
-        show_ground_state = st.checkbox(f"Show 'ground state' |{int(n-1)}⟩ on plot?", value=False)
-
-    with col_run:
-        run_pressed = st.button("Calculate (Run)", type="primary", width="stretch")
+    run_pressed = st.button("Calculate (Run)", type="primary", width="stretch")
 
     if run_pressed:
         transitions = editable_df.to_dict(orient="records")

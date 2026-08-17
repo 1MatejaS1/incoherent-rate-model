@@ -1,6 +1,6 @@
 import qutip as qt; from qutip import basis, mesolve; import numpy as np; import matplotlib.pyplot as plt; import pandas as pd; from scipy.interpolate import interp1d
 
-def population_simulation(number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns", hide_ground_state: bool = True):
+def population_simulation(number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns"):
     ket = basis(number_of_states,starting_state)
     H = qt.qzero(number_of_states)
 
@@ -29,11 +29,10 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
 
     fig, ax = plt.subplots()
 
-    states_to_plot = range(number_of_states - 1) if (hide_ground_state and number_of_states > 1) else range(number_of_states)
     colors = plt.colormaps['tab10'].colors
     styles = ['-', '--', '-.', ':']
 
-    for i in states_to_plot:
+    for i in range(number_of_states - 1):
         label = labels[i]
         style = styles[i % len(styles)]
         ax.loglog(DF[time_col_name], DF[label], label=label, color=colors[i], linestyle=style)
@@ -45,22 +44,9 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
 
     return fig, DF
 
-def plot_experimental_data(data_exp):
-    time_exp = data_exp.iloc[:, 0].values
-    y_columns = data_exp.columns[1:]
-    colors = plt.colormaps['tab10'].colors
-    markerstyles = ['o', '^', 'x', 'v', 's', '*', 'P,', 'D', '>'] 
+def data_analysis(data_exp, number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns"):
 
-    fig, ax = plt.subplots()
-
-    for i,col in enumerate(y_columns):
-        ax.loglog(time_exp, data_exp[col], label=col, marker = markerstyles[i], linestyle = "None", color=colors[i])
-
-    return fig
-
-def data_analysis(data_exp, number_of_states: int, starting_state: int, state_transitions: list[dict], t_list: np.ndarray, time_unit: str = "ns", hide_ground_state: bool = True):
-
-    fig_model,data_model = population_simulation(number_of_states, starting_state, state_transitions, t_list, time_unit, hide_ground_state)
+    fig_model,data_model = population_simulation(number_of_states, starting_state, state_transitions, t_list, time_unit)
 
     time_exp = data_exp.iloc[:, 0].values
     time_model = data_model.iloc[:, 0].values
@@ -89,23 +75,10 @@ def data_analysis(data_exp, number_of_states: int, starting_state: int, state_tr
         ax2[i, 0].plot(residuals.iloc[:, i], marker = "X", linestyle = "None", color=colors[i], markersize = 9) 
         ax2[i, 0].set_ylabel(residuals.columns[i])
         ax2[i, 0].set_xscale('log')
-        ax2[i, 0].set_ylabel("Residual", fontsize=14)
+        ax2[i, 0].set_ylabel("Log Residual", fontsize=14)
         ax2[i, 0].set_xlabel(f"Time [{time_unit}]", fontsize=14)
         ax2[i, 0].tick_params(axis='both', labelsize=10)
 
     plt.tight_layout()
 
     return fig_model, fig_res, data_model, residuals
-
-def normalisation_to_one(data_exp):
-
-    y = data_exp.columns[1:]
-
-    normalisation = data_exp.iloc[:, 1:].max()
-    normalised = data_exp.copy()
-    normalised[y] = data_exp[y] / normalisation
-
-    return normalised
-
-
-
