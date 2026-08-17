@@ -6,7 +6,7 @@ from helper import plot_experimental_data, normalisation_to_one
 
 st.title("Inchoherent Rate Model Simulation")
 st.markdown("**Density matrix formalism** solver with custom lifetimes and transitions. You will be requested to define the number of states 'n' (Hilbert space dimension up to 10) in your system, including a ground (sink) state. " \
-"\n\n You can then assign a starting **Fock state vector |m⟩** (this could be the bright state in your system), the time domain for the simulation and rate constants with corresponding state transitions. " \
+"\n\n You can then assign a starting **basis state**/Fock state vector **|m⟩** (this could be the bright state in your system), the time domain for the simulation and rate constants with corresponding state transitions. " \
 "\n\n The time-evolution is then simulated with **QuTiP's** Lindblad master equation solver using the 'LSODA' method.")
 
 st.divider()
