@@ -1,4 +1,6 @@
-Built with **Streamlit** and **QuTiP** to simulate open quantum system dynamics using state-to-state transition lifetimes ($\tau$) and Lindblad jump operators.
+Built with **Streamlit** and **QuTiP** to simulate open quantum system dynamics using state-to-state transition lifetimes ($\tau$) and Lindblad jump operators. This is a **density matrix formalism** solver with custom lifetimes and transitions. You will be requested to define the number of states 'n' (Hilbert space dimension up to 10) in your system, including a ground (sink) state. You can then assign a starting **Fock state vector |m⟩** (this could be the bright state in your system), the time domain for the simulation and rate constants with corresponding state transitions. The time evolution is then simulated with **QuTiP's Lindblad master equation** solver using the **'LSODA'** method. 
+
+If you are looking to review this code, the main solver logic is located in the **solution.py** script.
 
 ## Key Features
 
