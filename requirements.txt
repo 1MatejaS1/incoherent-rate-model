@@ -1,5 +1,5 @@
 typing-extensions; python_version > "3.9"
-qutip < 5.0
+qutip
 numpy
 matplotlib >= 3.0.0
 pandas
