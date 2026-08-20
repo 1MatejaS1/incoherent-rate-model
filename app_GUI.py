@@ -9,6 +9,8 @@ st.markdown("**Density matrix formalism** solver with custom lifetimes and trans
 "\n\n You can then assign a starting **basis state**/Fock state vector **|m⟩** (this could be the bright state in your system), the time domain for the simulation and rate constants with corresponding state transitions. " \
 "\n\n The time-evolution is then simulated with **QuTiP's** Lindblad master equation solver using the 'LSODA' method.")
 
+st.link_button("Read more about this on GitHub", "https://github.com/1MatejaS1/incoherent-rate-model")
+
 st.divider()
 
 col1, col2 = st.columns(2)
