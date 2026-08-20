@@ -19,7 +19,7 @@ def population_simulation(number_of_states: int, starting_state: int, state_tran
 
 
     setting = {"method": "lsoda"}
-    solve_all = mesolve(H, ket, t_list, c_ops, expectations, options=setting)
+    solve_all = mesolve(H, ket, t_list, c_ops, e_ops = expectations, options=setting)
 
     time_col_name = f"time [{time_unit}]"
     data_dictionary = {time_col_name: t_list}
